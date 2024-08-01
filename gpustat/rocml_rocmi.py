@@ -119,7 +119,7 @@ ComputeProcess = namedtuple("ComputeProcess", ["pid", "usedGpuMemory"])
 
 
 def nvmlDeviceGetComputeRunningProcesses(dev):
-    return []
+    return None
 
     results = amdsmi_get_gpu_process_list(dev)
     return [ComputeProcess(pid=x.pid, usedGpuMemory=x.mem) for x in results]
