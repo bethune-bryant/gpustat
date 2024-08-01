@@ -69,7 +69,12 @@ def check_driver_nvml_version(driver_version_str: str):
 
 def nvmlDeviceGetFanSpeed(handle):
     di = rocmi.get_device_info(handle)
-    return di.get_metrics().current_fan_speed
+    try:
+        speed = di.get_metrics().current_fan_speed
+    except AttributeError:
+        return 0
+
+    return speed
 
 
 MemoryInfo = namedtuple("MemoryInfo", ["total", "used"])
@@ -103,11 +108,11 @@ def nvmlDeviceGetDecoderUtilization(dev):
 
 def nvmlDeviceGetPowerUsage(handle):
     di = rocmi.get_device_info(handle)
-    return di.current_power
+    return di.current_power / 1000000
 
 
 def nvmlDeviceGetEnforcedPowerLimit(handle):
-    return rocmi.get_device_info(handle).power_limit
+    return rocmi.get_device_info(handle).power_limit / 1000000
 
 
 ComputeProcess = namedtuple("ComputeProcess", ["pid", "usedGpuMemory"])
@@ -127,7 +132,13 @@ def nvmlDeviceGetGraphicsRunningProcesses(dev):
 def nvmlDeviceGetClkFreq(handle):
     di = rocmi.get_device_info(handle)
     metrics = di.get_metrics()
-    return metrics.current_gfxclk
+
+    try:
+        clk = metrics.current_gfxclks[0]
+    except AttributeError:
+        clk = metrics.current_gfxclk
+
+    return clk
 
 
 def nvmlDeviceGetClkFreqMax(handle):
