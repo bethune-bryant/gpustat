@@ -72,7 +72,7 @@ def nvmlDeviceGetFanSpeed(handle):
     try:
         speed = di.get_metrics().current_fan_speed
     except AttributeError:
-        return 0
+        return None
 
     return speed
 
