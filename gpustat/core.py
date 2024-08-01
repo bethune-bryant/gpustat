@@ -31,10 +31,15 @@ from blessed import Terminal
 
 from gpustat import util
 
+try:
+    from gpustat import rocml_rocmi as rocml
+except ImportError:
+    from gpustat import rocml
+
 if util.hasAMD():
-    from gpustat import rocml as nvml
-    from gpustat import rocml as N
-    from gpustat.rocml import check_driver_nvml_version
+    nvml = rocml
+    N = rocml
+    check_driver_nvml_version = rocml.check_driver_nvml_version
 else:
     from gpustat import nvml
     from gpustat.nvml import pynvml as N

@@ -95,6 +95,7 @@ install_requires = [
     'psutil>=5.6.0',    # GH-1447
     'blessed>=1.17.1',  # GH-126
     'typing_extensions',
+    'rocmi',
 ]
 
 tests_requires = [
