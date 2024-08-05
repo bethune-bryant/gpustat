@@ -42,15 +42,15 @@ def nvmlDeviceGetIndex(handle):
 
 
 def nvmlDeviceGetName(handle):
-    return rocmi.get_device_info(handle.card).name
+    return rocmi.get_device_info(handle).name
 
 
 def nvmlDeviceGetUUID(handle):
-    return rocmi.get_device_info(handle.card).guid
+    return rocmi.get_device_info(handle).guid
 
 
 def nvmlDeviceGetTemperature(handle, loc=NVML_TEMPERATURE_GPU):
-    di = rocmi.get_device_info(handle.card)
+    di = rocmi.get_device_info(handle)
     metrics = di.get_metrics()
     return metrics.temperature_hotspot
 
@@ -64,7 +64,7 @@ def check_driver_nvml_version(driver_version_str: str):
 
 
 def nvmlDeviceGetFanSpeed(handle):
-    di = rocmi.get_device_info(handle.card)
+    di = rocmi.get_device_info(handle)
     try:
         speed = di.get_metrics().current_fan_speed
     except AttributeError:
@@ -77,7 +77,7 @@ MemoryInfo = namedtuple("MemoryInfo", ["total", "used"])
 
 
 def nvmlDeviceGetMemoryInfo(handle):
-    di = rocmi.get_device_info(handle.card)
+    di = rocmi.get_device_info(handle)
 
     return MemoryInfo(
         total=di.vram_total,
@@ -89,7 +89,7 @@ UtilizationRates = namedtuple("UtilizationRates", ["gpu"])
 
 
 def nvmlDeviceGetUtilizationRates(handle):
-    di = rocmi.get_device_info(handle.card)
+    di = rocmi.get_device_info(handle)
     metrics = di.get_metrics()
     return UtilizationRates(gpu=metrics.average_gfx_activity)
 
@@ -103,21 +103,19 @@ def nvmlDeviceGetDecoderUtilization(dev):
 
 
 def nvmlDeviceGetPowerUsage(handle):
-    di = rocmi.get_device_info(handle.card)
+    di = rocmi.get_device_info(handle)
     return di.current_power / 1000000
 
 
 def nvmlDeviceGetEnforcedPowerLimit(handle):
-    return rocmi.get_device_info(handle.card).power_limit / 1000000
+    return rocmi.get_device_info(handle).power_limit / 1000000
 
 
 ComputeProcess = namedtuple("ComputeProcess", ["pid", "usedGpuMemory"])
 
 
-def nvmlDeviceGetComputeRunningProcesses(dev):
-    results = rocmi.get_processes()
-    current_procs = [ComputeProcess(pid=x.pid, usedGpuMemory=0) for x in results if dev.gpu_id in rocmi.get_process_gpus(x.pid)]
-    return current_procs
+def nvmlDeviceGetComputeRunningProcesses(handle):
+    return rocmi.get_process_for_gpu(handle)
 
 
 def nvmlDeviceGetGraphicsRunningProcesses(dev):
@@ -125,7 +123,7 @@ def nvmlDeviceGetGraphicsRunningProcesses(dev):
 
 
 def nvmlDeviceGetClkFreq(handle):
-    di = rocmi.get_device_info(handle.card)
+    di = rocmi.get_device_info(handle)
     metrics = di.get_metrics()
 
     try:
@@ -137,7 +135,7 @@ def nvmlDeviceGetClkFreq(handle):
 
 
 def nvmlDeviceGetClkFreqMax(handle):
-    di = rocmi.get_device_info(handle.card)
+    di = rocmi.get_device_info(handle)
     return di.get_clock_info()[-1]
 
 
