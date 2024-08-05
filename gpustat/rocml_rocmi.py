@@ -116,7 +116,7 @@ ComputeProcess = namedtuple("ComputeProcess", ["pid", "usedGpuMemory"])
 
 def nvmlDeviceGetComputeRunningProcesses(dev):
     results = rocmi.get_processes()
-    current_procs = [ComputeProcess(pid=x.pid, usedGpuMemory=0) for x in results if dev.id in rocmi.get_process_gpus(x.pid)]
+    current_procs = [ComputeProcess(pid=x.pid, usedGpuMemory=0) for x in results if dev.gpu_id in rocmi.get_process_gpus(x.pid)]
     return current_procs
 
 
