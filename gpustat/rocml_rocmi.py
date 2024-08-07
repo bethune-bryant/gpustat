@@ -110,14 +110,8 @@ def nvmlDeviceGetEnforcedPowerLimit(handle):
     return handle.power_limit / 1000000
 
 
-ComputeProcess = namedtuple("ComputeProcess", ["pid", "usedGpuMemory"])
-
-
 def nvmlDeviceGetComputeRunningProcesses(dev):
-    return None
-
-    results = amdsmi_get_gpu_process_list(dev)
-    return [ComputeProcess(pid=x.pid, usedGpuMemory=x.mem) for x in results]
+    return rocmi.get_processes_for(dev)
 
 
 def nvmlDeviceGetGraphicsRunningProcesses(dev):
